@@ -1,0 +1,80 @@
+# Koha instance demolib4 Apache config.
+# Koha instance demolib4 Apache config.
+ServerAdmin itc.admin@cameoml.com
+# OPAC
+ServerName localhost
+NameVirtualHost 116.74.192.25
+NameVirtualHost 192.168.1.50
+#default virtual host directives. These are copied from the site-available/default file
+<VirtualHost *>
+	
+	DocumentRoot /var/www
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /var/www/>
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+	</Directory>
+
+	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+	<Directory "/usr/lib/cgi-bin">
+		AllowOverride None
+		Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+		Order allow,deny
+		Allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    Alias /doc/ "/usr/share/doc/"
+    <Directory "/usr/share/doc/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    </Directory>
+
+</VirtualHost>
+
+
+# OPAC
+<VirtualHost 192.168.1.50 116.74.192.25>
+   Include /etc/koha/apache-shared.conf
+#  Include /etc/koha/apache-shared-disable.conf
+   Include /etc/koha/apache-shared-opac.conf
+
+   ServerName demolib4.cameoml.com
+   #   ServerAlias pugdesk
+   SetEnv KOHA_CONF "/etc/koha/sites/demolib4/koha-conf.xml"
+   AssignUserID demolib4-koha demolib4-koha
+
+   ErrorLog    /var/log/koha/demolib4/opac-error.log
+#  TransferLog /var/log/koha/demolib4/opac-access.log
+#  RewriteLog  /var/log/koha/demolib4/opac-rewrite.log
+</VirtualHost>
+
+# Intranet
+<VirtualHost 192.168.1.50 116.74.192.25>
+   Include /etc/koha/apache-shared.conf
+#  Include /etc/koha/apache-shared-disable.conf
+   Include /etc/koha/apache-shared-intranet.conf
+   
+   ServerName demolib4-intra.cameoml.com
+   SetEnv KOHA_CONF "/etc/koha/sites/demolib4/koha-conf.xml"
+   AssignUserID demolib4-koha demolib4-koha
+
+   ErrorLog    /var/log/koha/demolib4/intranet-error.log
+#  TransferLog /var/log/koha/demolib4/intranet-access.log
+#  RewriteLog  /var/log/koha/demolib4/intranet-rewrite.log
+</VirtualHost>
