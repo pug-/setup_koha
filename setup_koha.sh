@@ -11,6 +11,10 @@ sudo apt-get install -y koha-common
 # install mysql server
 sudo apt-get install -y mysql-server
 
+# packages for email configuration
+sudo apt-get install -y postfix
+sudo apt-get install -y mailutils
+
 # enable apache2 module
 sudo a2enmod rewrite
 sudo service apache2 restart
